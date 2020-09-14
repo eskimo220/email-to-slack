@@ -67,50 +67,16 @@ def main():
                 # This email has already been processed
                 return Response(response="Duplicate", status=409)
 
-            email_provider = "http://gmail.com/"
-
-            sender_email = email["from"][0]["original"]
-            email_subject = email["title"]
-            email_content = "```" + email["plain_text"] + "```"
-            timestamp = email["timestamp"]
-
-            all_to = ', '.join([i["original"] for i in email["to"]])
-            all_cc = ', '.join([i["original"] for i in email["cc"]])
             
-            data = {
-                "text": "",
-                "attachments": [
-                    {
-                        "fallback": "An email was sent by " + sender_email,
-                        "color": "#2196F3",
-                        "pretext": "",
-                        "author_name": sender_email,
-                        "author_link": email_provider,
-                        "author_icon": "",
-                        "title": email_subject,
-                        "title_link": email_provider,
-                        "text": email_content,
-                        "fields": [],
-                        "footer": "Sent to : " + all_to,
-                        "footer_icon": "",
-                        "ts": timestamp
-                    }
-                ]
+
+            dataTosend = {
+                "token": os.environ["USER_TOKEN"],
+                "channel": os.environ["SEND_TO_CHANNEL"],
+                "text": "<" + email["permalink"] + ">",
+                "as_user": true,
+                "unfurl_links": true
+                
             }
-
-
-            if all_cc:
-                data["attachments"][0]["fields"].append({
-                    "title": "cc",
-                    "value": all_cc
-                })
-
-            if email["attachments"]:
-                data["attachments"][0]["fields"].append({
-                    "title": "",
-                    "value": "This email also has attachments",
-                    "short": False
-                })
 
             INCOMING_WEBHOOK_URL = os.environ["INCOMING_WEBHOOK_URL"]
 
@@ -119,7 +85,7 @@ def main():
             }
             print("Sending the following data to ", INCOMING_WEBHOOK_URL)
             print("\n\n\n", data ,"\n\n\n")
-            r = requests.post(INCOMING_WEBHOOK_URL, headers=headers, json=data)
+            r = requests.post("https://slack.com/api/chat.postMessage", headers=headers, json=dataTosend)
             print("\n\n\n Exit with status code {}\n\n".format(r.status_code))
             # Slack API sends two payloads for single event. This is a bug
             # involving Heroku and Slack API.
