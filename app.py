@@ -85,7 +85,8 @@ def main():
             }
             print("Sending the following data to ", INCOMING_WEBHOOK_URL)
             print("\n\n\n", dataTosend ,"\n\n\n")
-            r = requests.post("https://slack.com/api/chat.postMessage", headers=headers, json=dataTosend)
+            r = requests.post("https://slack.com/api/chat.postMessage", headers=headers, params=dataTosend)
+
             print("\n\n\n Exit with status code {}\n\n".format(r.status_code))
             # Slack API sends two payloads for single event. This is a bug
             # involving Heroku and Slack API.
