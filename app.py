@@ -73,8 +73,8 @@ def main():
                 "token": os.environ["USER_TOKEN"],
                 "channel": os.environ["SEND_TO_CHANNEL"],
                 "text": "<" + email["permalink"] + ">",
-                "as_user": true,
-                "unfurl_links": true
+                "as_user": True,
+                "unfurl_links": True
                 
             }
 
