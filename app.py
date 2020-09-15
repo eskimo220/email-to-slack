@@ -72,11 +72,14 @@ def main():
             dataTosend = {
                 "token": os.environ["USER_TOKEN"],
                 "channel": os.environ["SEND_TO_CHANNEL"],
-                "text": "<" + email["permalink"] + ">",
+                "text": "<" + email["permalink"] + "|收到一封邮件>",
                 "as_user": True,
                 "unfurl_links": True
                 
             }
+
+            if email["attachments"]:
+                dataTosend.text += "请留意附件"
 
             INCOMING_WEBHOOK_URL = os.environ["INCOMING_WEBHOOK_URL"]
 
